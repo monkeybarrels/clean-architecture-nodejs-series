@@ -1,175 +1,322 @@
+# CLEAN Architecture Task API - Article 2
 
-## 🚀 Getting Started
+Welcome to Article 2 of our CLEAN Architecture series! We've now implemented **clean controllers** that create proper boundaries between HTTP and business logic.
 
-### Prerequisites
+## 🎯 What We've Built
 
-- Node.js 16+ 
-- npm 7+
-- TypeScript knowledge
+### Controllers Layer
+- ✅ **Clean HTTP boundaries** - Controllers only handle HTTP concerns
+- ✅ **Input validation** - Comprehensive request validation with detailed error messages
+- ✅ **Response formatting** - Consistent API response structure
+- ✅ **Error handling** - Proper error responses with codes and details
+- ✅ **Authentication** - User context extraction (placeholder for real auth)
+- ✅ **Rate limiting** - Protection against abuse
+- ✅ **Logging** - Action logging for monitoring and debugging
 
-### Installation
+### API Features
+- ✅ **Full CRUD operations** for tasks
+- ✅ **Pagination** support for task listing
+- ✅ **Query filtering** (completed/incomplete tasks)
+- ✅ **Consistent responses** with success/error structure
+- ✅ **Detailed validation** with field-specific error messages
 
-```bash
-# Clone or create the project directory
-mkdir clean-task-api
-cd clean-task-api
+## 🏗️ Architecture Progress
 
-# Copy all files from this article
-# (package.json, tsconfig.json, etc.)
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
+```
 src/
-├── controllers/     # HTTP request handlers (Article 2)
-├── services/        # Business logic (Article 3)
-├── data/           # Data access layer (Article 4)
-├── models/         # Domain models & DTOs (Article 5)
-├── infrastructure/ # Database, caching, monitoring (Article 6)
-└── app.ts          # Application setup
+├── controllers/        # ✅ Clean HTTP request handlers
+│   ├── baseController.ts   # Common controller functionality
+│   └── taskController.ts   # Task-specific HTTP handling
+├── services/          # 🔄 Business logic (placeholder)
+│   └── taskService.ts     # In-memory implementation for testing
+├── models/           # ✅ Data structures and interfaces
+│   ├── task.ts           # Core domain interfaces
+│   ├── http/             # HTTP-specific models
+│   └── common/           # Shared validation logic
+├── routes/           # ✅ Route definitions
+├── middleware/       # ✅ Request processing
+└── app.ts           # ✅ Updated application setup
+```
 
 ## 🚀 Getting Started
 
-### Prerequisites
-
-- Node.js 16+ 
-- npm 7+
-- TypeScript knowledge
-
 ### Installation
-
 ```bash
-# Clone or create the project directory
-mkdir clean-task-api
-cd clean-task-api
-
-# Copy all files from this article
-# (package.json, tsconfig.json, etc.)
-
-# Install dependencies
+# Install dependencies (includes new packages)
 npm install
 
 # Start development server
 npm run dev
 ```
 
-### Available Scripts
+### Testing the API
 
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run type-check` - Check TypeScript types
-
-## 🧪 Testing the Setup
-
-Once the server is running, test these endpoints:
-
+**1. Create a task:**
 ```bash
-# Basic API info
-curl http://localhost:3000/
-
-# Health check
-curl http://localhost:3000/health
-
-# API endpoints info
-curl http://localhost:3000/api
+curl -X POST http://localhost:3000/api/tasks \
+  -H "Content-Type: application/json" \
+  -H "user-id: user123" \
+  -d '{"title": "Complete the CLEAN architecture series"}'
 ```
+
+**2. Get all tasks:**
+```bash
+curl -X GET http://localhost:3000/api/tasks \
+  -H "user-id: user123"
+```
+
+**3. Get tasks with pagination:**
+```bash
+curl -X GET "http://localhost:3000/api/tasks?page=1&limit=5&completed=false" \
+  -H "user-id: user123"
+```
+
+**4. Update a task:**
+```bash
+curl -X PUT http://localhost:3000/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -H "user-id: user123" \
+  -d '{"title": "Updated task title", "completed": true}'
+```
+
+**5. Complete a task:**
+```bash
+curl -X POST http://localhost:3000/api/tasks/1/complete \
+  -H "user-id: user123"
+```
+
+**6. Delete a task:**
+```bash
+curl -X DELETE http://localhost:3000/api/tasks/1 \
+  -H "user-id: user123"
+```
+
+## 📋 API Documentation
+
+### Base URL
+```
+http://localhost:3000/api
+```
+
+### Authentication
+All API endpoints require a `user-id` header:
+```
+user-id: your-user-id
+```
+
+### Response Format
+All responses follow this structure:
+```json
+{
+  "success": true|false,
+  "data": { ... },          // On success
+  "message": "...",         // Optional success message
+  "error": {                // On error
+    "message": "...",
+    "code": "ERROR_CODE",
+    "details": ["..."]
+  },
+  "timestamp": "2023-..."   // On error
+}
+```
+
+### Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/tasks` | Create a new task |
+| GET | `/tasks` | Get all user tasks |
+| GET | `/tasks/:id` | Get specific task |
+| PUT | `/tasks/:id` | Update task |
+| DELETE | `/tasks/:id` | Delete task |
+| POST | `/tasks/:id/complete` | Mark as completed |
+
+### Query Parameters (GET /tasks)
+- `completed`: Filter by completion status (true/false)
+- `page`: Page number for pagination (default: 1)
+- `limit`: Items per page (default: 10, max: 100)
 
 ## 🔧 Configuration
 
-Copy `.env.example` to `.env` and adjust values:
+### Environment Variables
+```env
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000    # 15 minutes
+RATE_LIMIT_MAX_REQUESTS=100    # Max requests per window
 
-```bash
-cp .env.example .env
+# Request Configuration  
+REQUEST_TIMEOUT_MS=30000       # 30 seconds
+MAX_REQUEST_SIZE=10mb          # Maximum request body size
+
+# Security
+ENABLE_RATE_LIMITING=true      # Enable/disable rate limiting
 ```
 
-Key configuration options:
-- `PORT` - Server port (default: 3000)
-- `NODE_ENV` - Environment (development/production)
-- `LOG_LEVEL` - Logging level
+## 🎨 What Makes These Controllers "Clean"
 
-## 📁 Project Structure
+### 1. Single Responsibility
+Each controller method has one job: handle HTTP concerns
+- Validate input from HTTP requests
+- Call appropriate services
+- Format responses for HTTP
+- Handle HTTP-specific errors
 
-### Current State (Article 1)
-- ✅ Express server setup
-- ✅ TypeScript configuration
-- ✅ Basic middleware (CORS, Helmet, Morgan)
-- ✅ Health checks
-- ✅ Error handling
-- ✅ Environment configuration
+### 2. No Business Logic
+Controllers don't contain business rules:
+```typescript
+// ❌ BAD: Business logic in controller
+if (task.priority === 'high' && !user.isPremium) {
+  return res.status(403).json({ error: 'Premium required' });
+}
 
-### Coming Next (Article 2)
-- 🔄 HTTP controllers
-- 🔄 Request validation
-- 🔄 Response formatting
-- 🔄 Clean HTTP boundaries
+// ✅ GOOD: Delegate to service
+const task = await this.taskService.createTask(data);
+```
 
-## 🎨 Design Principles
+### 3. Comprehensive Validation
+Input validation happens at the HTTP boundary:
+- Field validation with specific error messages
+- Data sanitization and transformation
+- Type checking and format validation
 
-This setup follows CLEAN Architecture principles:
+### 4. Consistent Error Handling
+All errors are handled consistently:
+- Structured error responses
+- Appropriate HTTP status codes
+- Error logging for debugging
+- No sensitive data exposure
 
-1. **Independence**: Framework-agnostic business logic
-2. **Testability**: Easy to test without external dependencies
-3. **Flexibility**: Easy to change UI, database, or external services
-4. **Maintainability**: Clear separation of concerns
+### 5. Testable Design
+Controllers are easy to test:
+- Dependencies injected through constructor
+- Async operations properly handled
+- Service calls can be mocked
+- HTTP concerns isolated
 
-## 📝 What's Different
+## 🧪 Testing Examples
 
-Unlike typical Express setups, notice:
+### Valid Requests
+```bash
+# Create task - valid
+curl -X POST http://localhost:3000/api/tasks \
+  -H "Content-Type: application/json" \
+  -H "user-id: test-user" \
+  -d '{"title": "Valid task title"}'
+```
 
-- **No routes folder** - Controllers will handle routing
-- **No utils folder** - Everything has a specific architectural purpose
-- **Structured error handling** - Consistent error responses
-- **Environment-first configuration** - Easy deployment
+### Validation Errors
+```bash
+# Create task - title too short
+curl -X POST http://localhost:3000/api/tasks \
+  -H "Content-Type: application/json" \
+  -H "user-id: test-user" \
+  -d '{"title": "Hi"}'
 
-## 🔮 Series Roadmap
+# Response:
+{
+  "success": false,
+  "error": {
+    "message": "Validation failed",
+    "code": "VALIDATION_ERROR",
+    "details": ["Title must be at least 3 characters"]
+  },
+  "timestamp": "2023-..."
+}
+```
 
-1. **Article 1 (Current)**: Project setup and foundation ✅
-2. **Article 2**: Controllers - Clean HTTP boundaries
-3. **Article 3**: Services - Business logic encapsulation
-4. **Article 4**: Data Layer - Repository pattern
-5. **Article 5**: Business Objects - Domain models
-6. **Article 6**: Complete System - Production features
+### Authentication Errors
+```bash
+# Missing user-id header
+curl -X GET http://localhost:3000/api/tasks
+
+# Response:
+{
+  "success": false,
+  "error": {
+    "message": "Authentication required. Please provide user-id header.",
+    "code": "AUTHENTICATION_REQUIRED"
+  },
+  "timestamp": "2023-..."
+}
+```
+
+## 🔍 Code Organization
+
+### BaseController Pattern
+All controllers extend `BaseController`:
+- Common functionality (success/error responses)
+- Consistent user ID extraction
+- Pagination helpers
+- Error handling utilities
+
+### Validation Layer
+Comprehensive validation with:
+- `ValidationRules` class for reusable rules
+- Field-specific error messages
+- Data sanitization
+- Type checking
+
+### Response Formatting
+Consistent API responses:
+- Success responses with data
+- Error responses with codes
+- Timestamp tracking
+- Message handling
+
+## 📈 What's Next (Article 3)
+
+In the next article, we'll implement the **Services layer**:
+- Rich business logic implementation
+- Domain rules and validations
+- Workflow coordination
+- Framework-independent operations
+
+The placeholder `TaskService` will be replaced with real business logic that handles:
+- Task creation rules
+- User permissions
+- Business validations
+- Complex operations
 
 ## 🤝 Contributing
 
-This is an educational series. Feel free to experiment and extend!
-
-## 📚 Further Reading
-
-- [Clean Architecture by Robert Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
-- [Domain-Driven Design](https://martinfowler.com/bliki/DomainDrivenDesign.html)
+This is part of an educational series. Feel free to:
+- Experiment with the code
+- Add new validation rules
+- Extend the API endpoints
+- Improve error handling
 
 ---
 
-**Next Up**: Article 2 - Building bulletproof controllers that create clean boundaries between HTTP and business logic.
+**Current State**: Controllers implemented with clean HTTP boundaries
+**Next Article**: Services - The heart of your business logic
 ```
 
 ---
 
-## 📋 Installation Instructions
+## 📋 Complete File Checklist
 
-To set up Article 1:
+**Article 2 includes these files:**
 
-1. **Create the directory structure** as shown above
-2. **Copy all file contents** into their respective files
-3. **Run the setup commands**:
+✅ **Updated package.json** - Added express-validator and rate-limit
+✅ **Enhanced .env.example** - Rate limiting and security config
+✅ **Core models** - Task interfaces and HTTP models
+✅ **BaseController** - Common controller functionality
+✅ **TaskController** - Complete CRUD operations with validation
+✅ **Route definitions** - Clean route organization
+✅ **Middleware** - Rate limiting and error handling
+✅ **Updated app.ts** - Full application with all middleware
+✅ **Placeholder service** - In-memory implementation for testing
+✅ **Comprehensive README** - API documentation and examples
 
-```bash
-# Install dependencies
-npm install
+## 🎯 Key Features Implemented
 
-# Start development server
-npm run dev
-```
-
-4. **Test the endpoints**:
-   - http://localhost:3000/ - Basic API info
-   - http://localhost:3000/health - Health check
-   - http://localhost:3000/api - Available endpoints
-
-This gives you a solid foundation with proper TypeScript setup, middleware configuration, error handling, and the folder structure ready for the upcoming articles.
+1. **Complete CRUD API** for tasks
+2. **Input validation** with detailed error messages
+3. **Rate limiting** protection
+4. **Consistent response format** across all endpoints
+5. **Comprehensive error handling** with proper HTTP codes
+6. **Request logging** for monitoring
+7. **Authentication middleware** (placeholder)
+8. **API documentation** endpoint
+9. **Health checks** with controller status
+10. **Production-ready** error handling and security

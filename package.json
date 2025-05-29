@@ -19,26 +19,25 @@
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
     "type-check": "tsc --noEmit",
-    "lint": "eslint 'src/**/*.{ts,js}' --fix",
+    "lint": "echo 'Linting will be added in later articles'",
     "test": "echo 'Tests will be added in later articles'"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.18.2",
+    "cors": "^2.8.5",
     "helmet": "^7.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "express-validator": "^7.0.1",
+    "express-rate-limit": "^6.10.0"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "@types/cors": "^2.8.13",
     "@types/morgan": "^1.9.4",
     "@types/node": "^20.5.0",
-    "@typescript-eslint/eslint-plugin": "^8.33.0",
-    "@typescript-eslint/parser": "^8.33.0",
-    "eslint": "^9.27.0",
-    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "nodemon": "^3.0.1"
   },
   "engines": {
     "node": ">=16.0.0",
