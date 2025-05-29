@@ -1,0 +1,6 @@
+# Controllers will be added in Article 2
+# This directory will contain HTTP request handlers that:
+# - Validate and sanitize input
+# - Call appropriate services
+# - Format responses
+# - Handle HTTP-specific errors

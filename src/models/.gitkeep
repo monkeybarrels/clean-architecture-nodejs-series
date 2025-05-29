@@ -1,0 +1,6 @@
+# Models will be added in Article 5
+# This directory will contain:
+# - Domain models with business logic
+# - DTOs for data transfer
+# - Value objects for domain concepts
+# - Request/response interfaces

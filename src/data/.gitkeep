@@ -1,0 +1,6 @@
+# Data access layer will be added in Article 4
+# This directory will contain repositories that:
+# - Abstract database operations
+# - Provide consistent data access patterns
+# - Enable database independence
+# - Handle data mapping and transformation

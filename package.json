@@ -1,25 +1,47 @@
 {
   "name": "clean-task-api",
   "version": "1.0.0",
-  "description": "CLEAN Architecture implementation in Node.js - Article Series",
+  "description": "CLEAN Architecture implementation in Node.js - Task Management API",
   "main": "dist/app.js",
+  "author": "Your Name",
+  "license": "MIT",
+  "keywords": [
+    "clean-architecture",
+    "nodejs",
+    "typescript",
+    "express",
+    "task-management"
+  ],
   "scripts": {
-    "dev": "nodemon --exec ts-node src/app.ts",
+    "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint 'src/**/*.{ts,js}' --fix",
+    "test": "echo 'Tests will be added in later articles'"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
+    "express": "^4.18.2",
     "helmet": "^7.0.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.17",
     "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
     "@types/morgan": "^1.9.4",
-    "typescript": "^5.2.2",
+    "@types/node": "^20.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^9.27.0",
+    "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
-    "nodemon": "^3.0.1"
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
   }
 }

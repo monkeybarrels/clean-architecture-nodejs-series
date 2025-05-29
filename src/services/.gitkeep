@@ -1,0 +1,6 @@
+# Services will be added in Article 3
+# This directory will contain business logic that:
+# - Implements domain rules
+# - Coordinates business operations
+# - Is independent of HTTP and database concerns
+# - Contains the core application logic
